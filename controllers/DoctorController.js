@@ -28,10 +28,10 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
         // Find doctor
-        const doctor = await Doctor.findOne({ username });
+        const doctor = await Doctor.findOne({ email });
         if (!doctor) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }

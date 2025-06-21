@@ -4,11 +4,12 @@ const RejectedPatient = require('../models/RejectedPatient');
 const emailService = require('../utils/emailService');
 
 exports.registerPatient = async (req, res) => {
+    console.log(req.body)
     try {
-        const { name, email, phone, gender, date, message, branch } = req.body;
+        const { name, phone, gender, date, message, branch } = req.body;
 
         const patient = new PendingPatient({
-            name, email, phone, gender, date, message, branch
+            name, phone, gender, date, message, branch
         });
 
         await patient.save();
@@ -36,48 +37,45 @@ exports.getAcceptedPatients = async (req, res) => {
     }
 };
 
+
+
 exports.updatePatientStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
 
-        // Find pending patient
+        // console.log(req.body)
+
         const pendingPatient = await PendingPatient.findById(id);
         if (!pendingPatient) {
             return res.status(404).json({ error: 'Patient not found' });
         }
 
         if (status === 'accepted') {
-            // Move to accepted collection
             const acceptedPatient = new AcceptedPatient(pendingPatient.toObject());
             await acceptedPatient.save();
-
-            // Send confirmation email
-            await emailService.sendAppointmentConfirmation(
-                pendingPatient.email,
-                pendingPatient.name,
-                pendingPatient.date,
-                pendingPatient.branch
-            );
-
-            // Remove from pending
             await PendingPatient.findByIdAndDelete(id);
 
-            return res.json({ message: 'Patient accepted', patient: acceptedPatient });
+            // ✅ Respond to frontend immediately
+            res.json({ message: 'Patient accepted', patient: acceptedPatient });
         }
-        else if (status === 'rejected') {
-            // Move to rejected collection
-            const rejectedPatient = new RejectedPatient(pendingPatient.toObject());
-            await rejectedPatient.save();
+        // 🔄 Send email in the background (no await)
+        //     emailService.sendAppointmentConfirmation(
+        //         pendingPatient.email,
+        //         pendingPatient.name,
+        //         pendingPatient.date,
+        //         pendingPatient.branch
+        //     ).catch(err => console.error('Email send failed:', err));
 
-            // Remove from pending
-            await PendingPatient.findByIdAndDelete(id);
+        // } else if (status === 'rejected') {
+        //     const rejectedPatient = new RejectedPatient(pendingPatient.toObject());
+        //     await rejectedPatient.save();
+        //     await PendingPatient.findByIdAndDelete(id);
 
-            return res.json({ message: 'Patient rejected', patient: rejectedPatient });
-        }
-        else {
-            return res.status(400).json({ error: 'Invalid status' });
-        }
+        //     res.json({ message: 'Patient rejected', patient: rejectedPatient });
+        // } else {
+        //     return res.status(400).json({ error: 'Invalid status' });
+        // }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

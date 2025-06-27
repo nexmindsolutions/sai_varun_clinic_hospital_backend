@@ -8,7 +8,7 @@ const patientRoutes = require('./routes/patientRoutes.js');
 const app = express();
 
 // Database connection
-mongoose.connect('mongodb://varunclinic:Varun%231clinic@13.203.245.50:27017/', {
+mongoose.connect('mongodb://varunclinic:Varun%231clinic@15.206.218.19:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

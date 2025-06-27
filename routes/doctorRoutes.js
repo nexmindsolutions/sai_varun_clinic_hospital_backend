@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const DoctorController = require('../controllers/doctorController'); // lowercase 'd'
+const DoctorController = require('../controllers/doctorController.js'); // lowercase 'd'
 
 // Doctor registration and login
 router.post('/register', DoctorController.register);

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const PatientController = require('../controllers/patientController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const PatientController = require('../controllers/patientController.js');
+const authMiddleware = require('../middlewares/authMiddleware.js');
 
 // Public routes
 router.post('/', PatientController.registerPatient);

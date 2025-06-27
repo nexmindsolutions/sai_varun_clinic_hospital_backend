@@ -1,7 +1,7 @@
-const PendingPatient = require('../models/PendingPatient');
-const AcceptedPatient = require('../models/AcceptedPatient');
-const RejectedPatient = require('../models/RejectedPatient');
-const emailService = require('../utils/emailService');
+const PendingPatient = require('../models/PendingPatient.js');
+const AcceptedPatient = require('../models/AcceptedPatient.js');
+const RejectedPatient = require('../models/RejectedPatient.js');
+const emailService = require('../utils/emailService.js');
 
 exports.registerPatient = async (req, res) => {
     try {
